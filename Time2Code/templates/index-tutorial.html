@@ -1,0 +1,353 @@
+<html>
+
+  <head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- UI based on the Play-With-Moby site and by the team at Play-With-Docker and the learning experiences they deliver everyday -->
+
+
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/darkly/bootstrap.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.8/ace.js" type="text/javascript"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdn.rawgit.com/replit/jq-console/8baeef38/lib/jqconsole.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/2.8.1/xterm.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/xterm/2.8.1/xterm.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/2.8.1/addons/fit/fit.js"></script>
+<script src="https://cdn.rawgit.com/showdownjs/showdown/<version tag>/dist/showdown.min.js"></script>
+
+<style>
+    html, body {
+        height: 100%;
+        background-color: #24323a;
+        color: #fff;
+        overflow: auto;
+    }
+    body {
+        display: flex;
+        flex-direction: column
+    }
+    body>* {
+        flex: none
+    }
+    #window {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+    }
+    #IDE {
+        background-color: #000000;
+    }
+    #tutorial {
+        padding-top: 25px;
+        padding-right: 25px;
+        padding-bottom: 25px;
+        padding-left: 25px;
+    }
+    #terminal {
+        height: 75%;
+        overflow: hidden;
+    }
+    .ace_layer ace_gutter-layer ace_folding-enabled {
+        background-color: #000000;
+    }
+    .navbar-header {
+        margin-top: 5px
+    }
+    .navbar-header button {
+        margin-left: 10px
+    }
+    .navbar-header input {
+        color: #000;
+        margin-left: 5px;
+        width: 300px;
+        display: none
+    }
+    .navbar {
+        border-radius: 0px;
+        margin-bottom: 0px;
+        postion: fixed;
+    }
+    .navbar.navbar-inverse, .navbar.navbar-default {
+        background-color: #052f47;
+        border-color: #052f47
+    }
+    .navbar.navbar-inverse a, .navbar.navbar-inverse .navbar-nav li a {
+        color: #fff
+    }
+    .navbar.navbar-inverse a:hover, .navbar.navbar-inverse .navbar-nav li a:hover {
+        text-decoration: underline
+    }
+    footer {
+        background-color: #052f47;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
+    .navbar-brand {
+        font-weight: 900;
+        margin-left: 0px !important;
+        vertical-align: middle;
+        float: none
+    }
+    .panel {
+        border: none;
+        box-shadow: 0px 0px 1px #828282
+    }
+    .panel:hover {
+        box-shadow: 0px 0px 6px #828282
+    }
+    .panel-container-vertical {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: hidden;
+    }
+    .panel-top {
+        flex: 0 0 auto;
+        height: 50%;
+        width: 100%;
+    }
+    .panel-bottom {
+        flex: 1 1 auto;
+        background-color: #000000;
+    }
+    .panel-container {
+        display: flex;
+        flex-direction: row;
+        overflow: hidden;
+        height: 100%;
+        xtouch-action: none;
+    }
+    .terminal {
+        font-size: 15px
+    }
+    .panel-left {
+        flex: 0 0 auto;
+        width: 50%;
+        min-width: 150px;
+    }
+    .splitter {
+        flex: 0 0 auto;
+        width: 18px;
+        background: url(https://raw.githubusercontent.com/RickStrahl/jquery-resizable/master/assets/vsizegrip.png) center center no-repeat #101e26;
+        min-height: 200px;
+        cursor: col-resize;
+    }
+    .splitter-horizontal {
+        flex: 0 0 auto;
+        height: 5px;
+        background: url(https://raw.githubusercontent.com/RickStrahl/jquery-resizable/master/assets/hsizegrip.png) center center no-repeat #101e26;
+        cursor: row-resize;
+    }
+    .panel-right {
+        flex: 1 1 auto;
+        width: 100%;
+        background: #24323a
+    }
+    .pagination {
+        clear:both;
+        position:relative;
+        text-align:center;
+    }
+    .center {
+        text-align: center;
+    }
+</style>
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+</head>
+  <body>
+
+    <header class="site-header">
+
+</header>
+<nav class="navbar navbar-default navbar-inverse">
+
+    <div class="container">
+      <div class="logo"><img src="/static/TIME2CODE-grey.png"></div>
+        <div class="navbar-header">
+        <!--<a class="navbar-brand" href="/">Time2Code</a>-->
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+
+        </div>
+  </div><!-- /.container-fluid -->
+</nav>
+    <div class="panel-container-vertical">
+    <div class="panel-container">
+
+        <div class="panel-left" style="overflow:auto;">
+
+                <div id="tutorial">{{ markdown }}</div>
+                <div class="center" hidden><ul class="pagination" id="buttons">
+                    <li><a href="#">«</a></li>
+                    <li><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                    <li><a href="#">6</a></li>
+                    <li><a href="#">»</a></li>
+                </ul></div>
+
+        </div>
+
+        <div class="splitter">
+        </div>
+
+        <div class="panel-right" >
+            <div class="panel-top" id="IDE">{{ code_text }}</div>
+
+            <div class="splitter-horizontal">
+            </div>
+
+            <div class="panel-bottom">
+                <div id="terminal">
+                </div>
+            </div>
+        </div>
+      </div>
+
+    </div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script src="https://rawgit.com/RickStrahl/jquery-resizable/master/dist/jquery-resizable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.7/ace.js"></script>
+<script>
+    var IDE = ace.edit("IDE");
+
+    IDE.setTheme("ace/theme/vibrant_ink");
+    IDE.session.setMode("ace/mode/python");
+
+    IDE.setShowPrintMargin(false);
+
+    $(".panel-left").resizable({
+        handleSelector: ".splitter",
+        resizeHeight: false,
+    });
+</script>
+
+  <footer>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <ul class="nav navbar-nav">
+            <li>
+                <button id="code" onclick="termchange()" class="btn btn-success navbar-btn">RUN IT</button>
+                <button id="code" onclick="termclear()" class="btn btn-danger navbar-btn">CLEAR TERM</button>
+            </li>
+            <form class="navbar-form navbar-right">
+                <div class="form-group">
+                  <select id="mode" class="form-control" style="float:right;">
+                    <option label="python" value="python3">python3</option>
+                    <option label="golang" value="golang">golang</option>
+                    <option label="javascript" value="nodejs">nodejs</option>
+                    <option label="fortran" value="fortran">fortran</option>
+                    <option label="ruby" value="ruby">ruby</option>
+                    <option label="powershell" value="powershell">powershell</option>
+                    <option label="csharp" value="csharp-experimental">csharp-experimental</option>
+                  </select>
+                    <script>
+                        document.getElementById("mode").value = "{{ code_lang }}";
+                        var modeElement = document.getElementById("mode");
+                        mode = modeElement.options[modeElement.selectedIndex].label;
+                        var IDE = ace.edit("IDE");
+                        IDE.session.setMode("ace/mode/" + mode);
+                        var code = $('<textarea />').html(`{{ code_text }}`).text();
+                        IDE.setValue(code, -1);
+                        document.addEventListener("DOMContentLoaded", function(event){
+                            $("#mode").change(function() {
+                                var modeElement = document.getElementById("mode");
+                                mode = modeElement.options[modeElement.selectedIndex].label;
+                                console.log(mode);
+                                var IDE = ace.edit("IDE");
+                                IDE.setTheme("ace/theme/vibrant_ink");
+                                IDE.session.setMode("ace/mode/" + mode);
+                                IDE.setOption("showPrintMargin", false);
+                            });
+                        });
+
+
+
+                    </script>
+                </div>
+            </form>
+        </ul>
+      </div>
+    </nav>
+
+</footer>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script>
+        function sleep(ms) {
+          return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        Terminal.loadAddon('fit');
+        var term = new Terminal({cursorBlink: false, rows: 12});
+        term.open(document.getElementById('terminal'));
+
+        async function termclear() {
+            term.destroy();
+            await sleep(100);
+            term = new Terminal({cursorBlink: false, rows: 12});
+            term.open(document.getElementById('terminal'));
+        };
+
+        function termchange() {
+                    var getmode = document.getElementById("mode");
+                    var mode = getmode.options[getmode.selectedIndex].label;
+                    var mode_code = getmode.options[getmode.selectedIndex].value;
+                    var IDE = ace.edit("IDE");
+                    var code = IDE.getValue();
+                    var url = "http://" + location.host + "/function/" + mode_code;
+                    console.log(url);
+                    termclear()
+                    $.ajax({
+                        url: url,
+                        type: 'post',
+                        dataType: 'text',
+                        headers: {'Content-Type': 'text/plain'},
+                        // data: "print('hey')",
+                        data: code,
+                        success: function (data) {
+                            console.log(data);
+                            $(function () {
+                                var writePrompt = function () {
+                                    var termData = data.replace(/\r?\n/g, "\r\n");
+                                    term.writeln(termData);
+                                  };
+                                writePrompt();
+                                term.scrollToBottom();
+                            });
+                        },
+                    });
+
+                };
+
+
+        $("pre").each(function() {
+            $(this).click(function() {
+                console.log($(this).text());
+                document.execCommand("copy");
+                var IDE = ace.edit("IDE");
+                var code = $('<textarea />').html($(this).text()).text();
+                IDE.setValue(code, -1);
+            })
+        });
+    </script>
+
+
+
+  </body>
+
+</html>

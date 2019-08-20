@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: time2codeserver
+spec:
+  type: LoadBalancer
+  ports:
+  - name: time2codeserver-5555
+    port: 5555
+    protocol: TCP
+    targetPort: 5555
+  selector:
+    app: time2codeserver
+    component: time2codeserver
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: time2codeserver
+spec:
+  replicas: 3
+  rollbackTo:
+    revision: 0
+  selector:
+    matchLabels:
+      app: time2codeserver
+      component: time2codeserver
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: time2codeserver
+        component: time2codeserver
+    spec:
+      containers:
+      - image: jockdarock/time2codeserver:latest
+        name: time2codeserver
+        imagePullPolicy: Always
+        env:
+        - name: time2code_provider_url
+          value: "http://time2codeserver.default:5555"
+        ports:
+        - containerPort: 5555
+          protocol: TCP
+      restartPolicy: Always

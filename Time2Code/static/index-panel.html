@@ -1,0 +1,455 @@
+<html>
+    
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <!-- UI based on the Play-With-Moby site and by the team at Play-With-Docker and the learning experiences they deliver everyday -->
+        
+        
+        <link href="../static/bootstrap.min.css" rel="stylesheet">
+        <script src="../static/ace128.js" type="text/javascript"></script>
+        <script src="../static/jquery2.1.0.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../static/jqconsole.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../static/xterm.js"></script>
+        <link href="../static/xterm.css" rel="stylesheet"/>
+        <script src="../static/fit.js"></script>
+        <link rel="stylesheet" type="text/css" href="../static/nav.css">
+        <link rel="stylesheet" type="text/css" href="../static/iconfont.css">
+        
+        <script type="text/javascript" src="../static/nav.js"></script>        
+        
+        <style>
+            html, body {
+            height: 100%;
+            background-color: #052f47;
+            color: #fff;
+            overflow:hidden
+            }
+            img {
+            max-width: 100%
+            }
+            .mt50 {
+            margin-top: 50px
+            }
+            .mt20 {
+            margin-top: 20px
+            }
+            .mt10 {
+            margin-top: 10px
+            }
+            .mb10 {
+            margin-bottom: 10px
+            }
+            body {
+            display: flex;
+            flex-direction: column
+            }
+            body>* {
+            flex: none
+            }
+            #IDE {
+            background-color: #24323a
+            }
+            #terminal {
+            height: 100%;
+            overflow-y: visible;
+            }
+            .navbar-header {
+            margin-top: 5px
+            }
+            .navbar-header button {
+            margin-left: 10px
+            }
+            .navbar-header input {
+            color: #000;
+            margin-left: 5px;
+            width: 300px;
+            display: none
+            }
+            .navbar {
+            border-radius: 0px;
+            margin-bottom: 0px
+            }
+            .navbar.navbar-inverse {
+            background-color: #052f47;
+            border-color: #052f47
+            }
+            .navbar.navbar-inverse a, .navbar.navbar-inverse .navbar-nav li a {
+            color: #fff
+            }
+            .navbar.navbar-inverse a:hover, .navbar.navbar-inverse .navbar-nav li a:hover {
+            text-decoration: underline
+            }
+            footer {
+            background-color: #052f47;
+            height:50px
+            }
+            .navbar-brand {
+            font-weight: 900;
+            margin-left: 0px !important;
+            vertical-align: middle;
+            float: none
+            }
+            @media screen and (max-width: 600px) {
+            .navbar-brand {
+            font-size: 1.5em
+            }
+            }
+            .panel {
+            border: none;
+            box-shadow: 0px 0px 1px #828282
+            }
+            .panel:hover {
+            box-shadow: 0px 0px 6px #828282
+            }
+            .social {
+            list-style: none;
+            display: inline;
+            margin-left: 10px;
+            padding: 5px 8px
+            }
+            .social:hover {
+            opacity: 0.7
+            }
+            .social img {
+            width: 20px
+            }
+            .quora img {
+            width: 17px
+            }
+            .facebook img {
+            width: 16px
+            }
+            .panel-container {
+            display: flex;
+            flex-direction: row;
+            overflow: hidden;
+            height: 100%;
+            flex: 1 1 auto;
+            xtouch-action: none;
+            padding:0;
+            margin:0;
+            }
+            .terminal {
+            font-size: 15px
+            }
+            .panel-left, IDE {
+            flex: 0 0 auto;
+            width: 50%;
+            min-width: 150px
+            }
+            .content {
+            padding: 0 15px;
+            overflow-y: auto
+            }
+            .content {
+            padding: 0 15px
+            }
+            .splitter {
+            flex: 0 0 auto;
+            width: 18px;
+            background: url(./vsizegrip.png) center center no-repeat #101e26;
+            min-height: 200px;
+            cursor: col-resize
+            }
+            .panel-right {
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 auto;
+            width: 100%;
+            background-color: #000000
+            }
+            .panel-right>div {
+            flex: 1 1 auto;
+            margin-bottom: 15px;
+            overflow-y: auto
+            }
+            .panel-right>div:last-of-type {
+            margin-bottom: 0px
+            }
+            .panel-right>div.initialized {
+            background-color: black
+            }
+            .post-tag {
+            display: inline-block;
+            background: rgba(42, 122, 226, 0.15);
+            padding: 0 .5rem;
+            margin-right: .5rem;
+            border-radius: 4px;
+            color: #2a7ae2;
+            font-family: "Open Sans", serif;
+            font-size: 90%
+            }
+            .post-tag:before {
+            content: "\f02b";
+            font-family: FontAwesome;
+            padding-right: .5em
+            }
+            .post-tag:hover {
+            text-decoration: none;
+            background: #2a7ae2;
+            color: #fff
+            }
+            small .post-tag {
+            background: #eee;
+            color: #000
+            }
+            small .post-tag:before {
+            content: none
+            }
+            small .post-tag:hover {
+            text-decoration: none;
+            background: #000;
+            color: #fff;
+            cursor: default
+            }
+            .tags-expo :target:before {
+            content: "";
+            display: block;
+            height: 72px;
+            margin: -72px 0 0
+            }
+            @media (min-width: 38em) {
+            .tags-expo .tags-expo-list {
+            font-size: 2.9rem
+            }
+            .tags-expo .tags-expo-list .post-tag {
+            margin: .2em .3em
+            }
+            }
+            .tags-expo .tags-expo-section {
+            font-family: "Open Sans", serif
+            }
+            .tags-expo .tags-expo-section ul {
+            list-style-type: circle;
+            list-style-position: inside;
+            padding: 0
+            }
+            .tags-expo .tags-expo-section ul li {
+            padding: 0 1rem
+            }
+            .tags-expo .tags-expo-section ul li:hover {
+            list-style-type: disc
+            }
+            .tags-expo .tags-expo-section a {
+            font-size: 20px
+            }
+            .tags-expo .tags-expo-section .post-date {
+            display: inline-block;
+            font-size: 80%;
+            color: #000;
+            margin: 0;
+            padding: 0
+            }
+        </style>
+        
+        <link href="../static/font-awesome.min.css" rel="stylesheet">
+    </head>
+    <body>
+        
+        <header class="site-header">
+            <nav class="navbar navbar-default navbar-inverse">
+                
+                <div class="container">
+                    <div class="logo"><img src="../static/git3.png" width="50" height="50"></div>
+                    <div class="navbar-header">
+                        <!--<a class="navbar-brand" href="/">Time2Code</a>-->
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        
+                    </div>
+                </div><!-- /.container-fluid -->
+            </nav>
+        </header>
+        <div class="row panel-container">
+            <div class="nav2 col-xs-4  col-md-2">
+                
+                <ul>
+                    <li class="nav-item">
+                        <a href="javascript:;"><i class="my-icon nav-icon icon_1"></i><span>菜单1</span><i class="my-icon nav-more"></i></a>
+                        <ul>
+                            <li><a href="javascript:;"><span>菜单1-1</span></a></li>
+                            <li><a href="javascript:;"><span>菜单1-2</span></a></li>
+                            <li><a href="javascript:;"><span>菜单1-3</span></a></li>
+                            <li><a href="javascript:;"><span>菜单1-4</span></a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="javascript:;"><i class="my-icon nav-icon icon_2"></i><span>菜单2</span><i class="my-icon nav-more"></i></a>
+                        <ul>
+                            <li><a href="javascript:;"><span>菜单2-1</span></a></li>
+                            <li><a href="javascript:;"><span>菜单2-2</span></a></li>
+                            <li><a href="javascript:;"><span>菜单2-3</span></a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="javascript:;"><i class="my-icon nav-icon icon_3"></i><span>菜单3</span><i class="my-icon nav-more"></i></a>
+                        <ul>
+                            <li><a href="javascript:;"><span>菜单3-1</span></a></li>
+                            <li><a href="javascript:;"><span>菜单3-2</span></a></li>
+                            <li><a href="javascript:;"><span>菜单3-3</span></a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="javascript:;"><i class="my-icon nav-icon icon_3"></i><span>菜单3</span><i class="my-icon nav-more"></i></a>
+                        <ul>
+                            <li><a href="javascript:;"><span>菜单3-1</span></a></li>
+                            <li><a href="javascript:;"><span>菜单3-2</span></a></li>
+                            <li><a href="javascript:;"><span>菜单3-3</span></a></li>
+                        </ul>
+                    </li>                    
+                    <li class="nav-item">
+                        <a href="javascript:;"><i class="my-icon nav-icon icon_3"></i><span>菜单3</span><i class="my-icon nav-more"></i></a>
+                        <ul>
+                            <li><a href="javascript:;"><span>菜单3-1</span></a></li>
+                            <li><a href="javascript:;"><span>菜单3-2</span></a></li>
+                            <li><a href="javascript:;"><span>菜单3-3</span></a></li>
+                        </ul>
+                    </li>    
+                  
+                </ul>
+                <div class="nav-top">
+                    <div id="mini" style="border-bottom:1px solid rgba(255,255,255,.1)"><img src="../static/mini.png" ></div>
+                </div>            
+            </div>
+            
+            <div class="panel-container col-xs-8  col-md-10">
+                
+                
+                <div class="panel-left" id="IDE"></div>
+                
+                <div class="splitter">
+                </div>
+                <div class="panel-right">
+                    <div id="terminal"></div>
+                    <script>
+                        
+                    </script>
+                </div>
+            </div>
+        </div>
+        
+        <script src="../static/jquery1.12.2.min.js"></script>
+        <script src="j../static/query-resizable.min.js"></script>
+        <script src="../static/ace127.js"></script>
+        <script>
+            var IDE = ace.edit("IDE");
+            
+            IDE.setTheme("ace/theme/vibrant_ink");
+            IDE.session.setMode("ace/mode/python");
+            
+            IDE.setShowPrintMargin(false);
+            
+            $(".panel-left").resizable({
+                handleSelector: ".splitter",
+                resizeHeight: false,
+            });
+        </script>
+        
+        
+        
+        <footer>
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <button id="code" onclick="termchange()" class="btn btn-success navbar-btn btn-sm">运行</button>
+                            <button id="code" onclick="termclear()" class="btn btn-danger navbar-btn btn-sm">CLEAR TERM</button>
+                        </li>
+                        <form class="navbar-form navbar-right">
+                            <div class="form-group">
+                                <select id="mode" class="form-control input-sm" style="float:right;">
+                                    <option label="python" value="python3">python3</option>
+                                    <option label="golang" value="golang">golang</option>
+                                    <option label="javascript" value="nodejs">nodejs</option>
+                                    <option label="fortran" value="fortran">fortran</option>
+                                    <option label="ruby" value="ruby">ruby</option>
+                                    <option label="powershell" value="powershell">powershell</option>
+                                    <option label="csharp" value="csharp-experimental">csharp-experimental</option>
+                                </select>
+                                <script>
+                                    document.getElementById("mode").value = "{{ code_lang }}";
+                                    var modeElement = document.getElementById("mode");
+                                    mode = modeElement.options[modeElement.selectedIndex].label;
+                                    var IDE = ace.edit("IDE");
+                                    var code = $('<textarea />').html(`{{ code_text }}`).text();
+                                    IDE.setValue(code, -1);
+                                    IDE.session.setMode("ace/mode/" + mode);
+                                    document.addEventListener("DOMContentLoaded", function(event){
+                                        $("#mode").change(function() {
+                                            var modeElement = document.getElementById("mode");
+                                            mode = modeElement.options[modeElement.selectedIndex].label;
+                                            console.log(mode);
+                                            var IDE = ace.edit("IDE");
+                                            IDE.setTheme("ace/theme/vibrant_ink");
+                                            IDE.session.setMode("ace/mode/" + mode);
+                                            IDE.setOption("showPrintMargin", false);
+                                        });
+                                    });
+                                </script>
+                            </div>
+                        </form>
+                    </div>
+                </nav>
+                
+            </footer>
+            
+            <script src="../static/jquery1.12.2.min.js"></script>
+            <script src="../static/bootstrap.min.js"></script>
+            <script>
+                function sleep(ms) {
+                    return new Promise(resolve => setTimeout(resolve, ms));
+                }
+                
+                var term = new Terminal({cursorBlink: false, rows: 40});
+                term.open(document.getElementById('terminal'));
+                
+                function termchange() {
+                    var getmode = document.getElementById("mode");
+                    var mode = getmode.options[getmode.selectedIndex].label;
+                    var mode_code = getmode.options[getmode.selectedIndex].value;
+                    var IDE = ace.edit("IDE");
+                    var code = IDE.getValue();
+                    var url = "http://" + location.host + "/code?lang=" + mode_code;
+                    console.log(url)
+                    $.ajax({
+                        url: url,
+                        type: 'post',
+                        dataType: 'text',
+                        headers: {'Content-Type': 'text/plain;charset=UTF-8'},
+                        // data: "print('hey')",
+                        data: code,
+                        success: function (data) {
+                            console.log(data);
+                            $(function () {
+                                var writePrompt = function () {
+                                    var termData = data.replace(/\r?\n/g, "\r\n");
+                                    term.writeln(termData);
+                                };
+                                writePrompt();
+                                term.scrollToBottom();
+                            });
+                        },
+                    });
+                    
+                };
+                
+                async function termclear() {
+                    term.destroy();
+                    await sleep(100);
+                    term = new Terminal({cursorBlink: false, rows: 40});
+                    term.open(document.getElementById('terminal'));
+                };
+            </script>
+            
+            
+            
+        </body>
+        
+    </html>            
